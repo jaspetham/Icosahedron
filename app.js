@@ -4,10 +4,10 @@ import vertex from './shaders/vertex.glsl'
 import fragment from './shaders/fragment.glsl'
 import fragment1 from './shaders/fragment1.glsl'
 
-import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer'
-import {RenderPass} from 'three/examples/jsm/postprocessing/Renderpass'
-import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass'
-import {PostProcessing} from './postprocessing'
+import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer.js'
+import {RenderPass} from 'three/examples/jsm/postprocessing/Renderpass.js'
+import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass.js'
+import {PostProcessing} from './postprocessing.js'
 
 import * as dat from 'dat.gui';
 // import gsap from 'gsap';
