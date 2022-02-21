@@ -117,7 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"node_modules/three/build/three.module.js":[function(require,module,exports) {
+})({"gBK8":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36851,7 +36851,7 @@ if (typeof window !== 'undefined') {
     window.__THREE__ = REVISION;
   }
 }
-},{}],"node_modules/three/examples/jsm/controls/OrbitControls.js":[function(require,module,exports) {
+},{}],"x87H":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37706,13 +37706,13 @@ class MapControls extends OrbitControls {
 }
 
 exports.MapControls = MapControls;
-},{"three":"node_modules/three/build/three.module.js"}],"shaders/vertex.glsl":[function(require,module,exports) {
+},{"three":"gBK8"}],"hNHB":[function(require,module,exports) {
 module.exports = "#define GLSLIFY 1\nuniform float time;\nuniform float mouse;\nvarying vec2 vUv;\nvarying vec3 vPosition;\nuniform vec2 pixels;\nvarying vec3 vNormal;\nvarying vec3 eyeVector;\nvarying vec3 vBary;\nattribute vec3 aBary;\n\nfloat PI=3.141592653589793238;\n\n//\tClassic Perlin 3D Noise\n//\tby Stefan Gustavson\n//\nvec4 permute(vec4 x){return mod(((x*34.)+1.)*x,289.);}\nvec4 taylorInvSqrt(vec4 r){return 1.79284291400159-.85373472095314*r;}\nvec3 fade(vec3 t){return t*t*t*(t*(t*6.-15.)+10.);}\n\nfloat cnoise(vec3 P){\n    vec3 Pi0=floor(P);// Integer part for indexing\n    vec3 Pi1=Pi0+vec3(1.);// Integer part + 1\n    Pi0=mod(Pi0,289.);\n    Pi1=mod(Pi1,289.);\n    vec3 Pf0=fract(P);// Fractional part for interpolation\n    vec3 Pf1=Pf0-vec3(1.);// Fractional part - 1.0\n    vec4 ix=vec4(Pi0.x,Pi1.x,Pi0.x,Pi1.x);\n    vec4 iy=vec4(Pi0.yy,Pi1.yy);\n    vec4 iz0=Pi0.zzzz;\n    vec4 iz1=Pi1.zzzz;\n    \n    vec4 ixy=permute(permute(ix)+iy);\n    vec4 ixy0=permute(ixy+iz0);\n    vec4 ixy1=permute(ixy+iz1);\n    \n    vec4 gx0=ixy0/7.;\n    vec4 gy0=fract(floor(gx0)/7.)-.5;\n    gx0=fract(gx0);\n    vec4 gz0=vec4(.5)-abs(gx0)-abs(gy0);\n    vec4 sz0=step(gz0,vec4(0.));\n    gx0-=sz0*(step(0.,gx0)-.5);\n    gy0-=sz0*(step(0.,gy0)-.5);\n    \n    vec4 gx1=ixy1/7.;\n    vec4 gy1=fract(floor(gx1)/7.)-.5;\n    gx1=fract(gx1);\n    vec4 gz1=vec4(.5)-abs(gx1)-abs(gy1);\n    vec4 sz1=step(gz1,vec4(0.));\n    gx1-=sz1*(step(0.,gx1)-.5);\n    gy1-=sz1*(step(0.,gy1)-.5);\n    \n    vec3 g000=vec3(gx0.x,gy0.x,gz0.x);\n    vec3 g100=vec3(gx0.y,gy0.y,gz0.y);\n    vec3 g010=vec3(gx0.z,gy0.z,gz0.z);\n    vec3 g110=vec3(gx0.w,gy0.w,gz0.w);\n    vec3 g001=vec3(gx1.x,gy1.x,gz1.x);\n    vec3 g101=vec3(gx1.y,gy1.y,gz1.y);\n    vec3 g011=vec3(gx1.z,gy1.z,gz1.z);\n    vec3 g111=vec3(gx1.w,gy1.w,gz1.w);\n    \n    vec4 norm0=taylorInvSqrt(vec4(dot(g000,g000),dot(g010,g010),dot(g100,g100),dot(g110,g110)));\n    g000*=norm0.x;\n    g010*=norm0.y;\n    g100*=norm0.z;\n    g110*=norm0.w;\n    vec4 norm1=taylorInvSqrt(vec4(dot(g001,g001),dot(g011,g011),dot(g101,g101),dot(g111,g111)));\n    g001*=norm1.x;\n    g011*=norm1.y;\n    g101*=norm1.z;\n    g111*=norm1.w;\n    \n    float n000=dot(g000,Pf0);\n    float n100=dot(g100,vec3(Pf1.x,Pf0.yz));\n    float n010=dot(g010,vec3(Pf0.x,Pf1.y,Pf0.z));\n    float n110=dot(g110,vec3(Pf1.xy,Pf0.z));\n    float n001=dot(g001,vec3(Pf0.xy,Pf1.z));\n    float n101=dot(g101,vec3(Pf1.x,Pf0.y,Pf1.z));\n    float n011=dot(g011,vec3(Pf0.x,Pf1.yz));\n    float n111=dot(g111,Pf1);\n    \n    vec3 fade_xyz=fade(Pf0);\n    vec4 n_z=mix(vec4(n000,n100,n010,n110),vec4(n001,n101,n011,n111),fade_xyz.z);\n    vec2 n_yz=mix(n_z.xy,n_z.zw,fade_xyz.y);\n    float n_xyz=mix(n_yz.x,n_yz.y,fade_xyz.x);\n    return 2.2*n_xyz;\n}\n\nvoid main(){\n    vUv=uv;\n    vBary = aBary;\n    vNormal = normalize(normalMatrix * normal);\n    float noisy = mouse * pow(cnoise(vNormal + time),3.);\n    vec3 newPosition = position + noisy * normal;\n    vec4 worldPosition = modelMatrix * vec4(newPosition,1.);\n    eyeVector = normalize(worldPosition.xyz - cameraPosition);\n    gl_Position=projectionMatrix*modelViewMatrix*vec4(newPosition,1.);\n}";
-},{}],"shaders/fragment.glsl":[function(require,module,exports) {
+},{}],"k6p3":[function(require,module,exports) {
 module.exports = "#define GLSLIFY 1\nuniform float time;\nuniform float progress;\nuniform sampler2D landscape;\nuniform vec4 resolution;\nvarying vec2 vUv;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec3 eyeVector;\nvarying vec3 vBary;\nfloat PI=3.141592653589793238;\n\nvec2 hash22(vec2 p){\n    p=fract(p*vec2(5.3983,5.4427));\n    p+=dot(p.yx,p.xy+vec2(21.5351,14.3137));\n    return fract(vec2(p.x*p.y*95.4337,p.x*p.y*97.597));\n}\n\nvoid main(){\n    vec3 X=dFdx(vNormal);\n    vec3 Y=dFdy(vNormal);\n    vec3 normal=normalize(cross(X,Y));\n    vec3 light = vec3(1.);\n    float diffuse=dot(normal,light);\n    vec2 rand = hash22(vec2(diffuse * 9999999.));\n    vec2 uvv = vec2(\n        sign(rand.x-.5)*1.+(rand.x-.5)*.6,\n        sign(rand.y-.5)*1.+(rand.y-.5)*.6\n    );\n\n    float fresnel = pow(1. + dot(eyeVector,normal),2.); \n\n    vec2 uv =  uvv * gl_FragCoord.xy/vec2(1000.);\n\n    vec3 refracted = refract(eyeVector,normal,1./3.);\n    uv += 2. * refracted.xy;\n\n    vec4 t = texture2D(landscape,uv);\n    // gl_FragColor=vec4(vUv,0.,1.);\n    gl_FragColor = t * (1. - fresnel);\n}";
-},{}],"shaders/fragment1.glsl":[function(require,module,exports) {
+},{}],"qbw7":[function(require,module,exports) {
 module.exports = "#define GLSLIFY 1\nuniform float time;\nuniform float progress;\nuniform sampler2D landscape;\nuniform vec4 resolution;\nvarying vec2 vUv;\nvarying vec3 vPosition;\nvarying vec3 vNormal;\nvarying vec3 eyeVector;\nvarying vec3 vBary;\nfloat PI=3.141592653589793238;\n\nvec2 hash22(vec2 p){\n    p=fract(p*vec2(5.3983,5.4427));\n    p+=dot(p.yx,p.xy+vec2(21.5351,14.3137));\n    return fract(vec2(p.x*p.y*95.4337,p.x*p.y*97.597));\n}\n\nvoid main(){\n    float width = 2.;\n    vec3 d = fwidth(vBary);\n    vec3 s = smoothstep(d * (width + 0.5), d*(width - 0.5), vBary);\n    float line = max(s.x,max(s.y,s.z));\n    if(line<0.1) discard;\n    gl_FragColor = vec4(mix(vec3(1.), vec3(0.), 1. - line),1.);\n}";
-},{}],"node_modules/three/examples/jsm/shaders/CopyShader.js":[function(require,module,exports) {
+},{}],"VfYd":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37762,7 +37762,7 @@ var CopyShader = {
 		}`
 };
 exports.CopyShader = CopyShader;
-},{}],"node_modules/three/examples/jsm/postprocessing/Pass.js":[function(require,module,exports) {
+},{}],"h1ki":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37828,7 +37828,7 @@ class FullScreenQuad {
 }
 
 exports.FullScreenQuad = FullScreenQuad;
-},{"three":"node_modules/three/build/three.module.js"}],"node_modules/three/examples/jsm/postprocessing/ShaderPass.js":[function(require,module,exports) {
+},{"three":"gBK8"}],"CgT9":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37884,7 +37884,7 @@ class ShaderPass extends _Pass.Pass {
 }
 
 exports.ShaderPass = ShaderPass;
-},{"three":"node_modules/three/build/three.module.js","./Pass.js":"node_modules/three/examples/jsm/postprocessing/Pass.js"}],"node_modules/three/examples/jsm/postprocessing/MaskPass.js":[function(require,module,exports) {
+},{"three":"gBK8","./Pass.js":"h1ki"}],"tK19":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37969,7 +37969,7 @@ class ClearMaskPass extends _Pass.Pass {
 }
 
 exports.ClearMaskPass = ClearMaskPass;
-},{"./Pass.js":"node_modules/three/examples/jsm/postprocessing/Pass.js"}],"node_modules/three/examples/jsm/postprocessing/EffectComposer.js":[function(require,module,exports) {
+},{"./Pass.js":"h1ki"}],"B2Uy":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38198,7 +38198,7 @@ class FullScreenQuad {
 }
 
 exports.FullScreenQuad = FullScreenQuad;
-},{"three":"node_modules/three/build/three.module.js","../shaders/CopyShader.js":"node_modules/three/examples/jsm/shaders/CopyShader.js","./ShaderPass.js":"node_modules/three/examples/jsm/postprocessing/ShaderPass.js","./MaskPass.js":"node_modules/three/examples/jsm/postprocessing/MaskPass.js"}],"node_modules/three/examples/jsm/postprocessing/Renderpass.js":[function(require,module,exports) {
+},{"three":"gBK8","../shaders/CopyShader.js":"VfYd","./ShaderPass.js":"CgT9","./MaskPass.js":"tK19"}],"fJlF":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38265,7 +38265,7 @@ class RenderPass extends _Pass.Pass {
 }
 
 exports.RenderPass = RenderPass;
-},{"three":"node_modules/three/build/three.module.js","./Pass.js":"node_modules/three/examples/jsm/postprocessing/Pass.js"}],"postprocessing.js":[function(require,module,exports) {
+},{"three":"gBK8","./Pass.js":"h1ki"}],"Qcja":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38294,7 +38294,7 @@ var PostProcessing = {
   fragmentShader: "\n            uniform sampler2D tDiffuse;\n            uniform float pixelSize;\n            uniform vec2 resolution;\n            uniform float time;\n            uniform float howMuchRgbShiftICanHave;\n\n            varying highp vec2 vUv;\n            float hash(vec2 p) { return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x)))); }\n\n            void main(){\n                vec2 shift = vec2(0.01,0.01) * howMuchRgbShiftICanHave;\n                // make bw\n                vec4 t = texture2D(tDiffuse,vUv);\n                vec4 t1 = texture2D(tDiffuse,vUv + shift);\n                vec4 t2 = texture2D(tDiffuse,vUv - shift);\n                vec3 color = vec3((t.r + t.b + t.g)/5.);\n                vec3 color1 = vec3((t1.r + t1.b + t1.g)/5.);\n                vec3 color2 = vec3((t2.r + t2.b + t2.g)/5.);\n\n                //rgb shift\n                color = vec3(color1.r,color.g,color2.b);\n\n                // noise\n                float val = hash(vUv + time) * 0.2;\n\n                vec2 dxy = pixelSize / resolution;\n                vec2 coord = dxy * floor( vUv / dxy );\n                gl_FragColor = texture2D(tDiffuse,vUv);\n                gl_FragColor = vec4(color + vec3(val),1.);\n            }"
 };
 exports.PostProcessing = PostProcessing;
-},{}],"node_modules/dat.gui/build/dat.gui.module.js":[function(require,module,exports) {
+},{}],"ArXC":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41202,9 +41202,9 @@ var index = {
 };
 var _default = index;
 exports.default = _default;
-},{}],"assets/car.jpg":[function(require,module,exports) {
-module.exports = "/car.6bbd580b.jpg";
-},{}],"app.js":[function(require,module,exports) {
+},{}],"Hq6H":[function(require,module,exports) {
+module.exports = "car.8b4f70a6.jpg";
+},{}],"A2T1":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41436,7 +41436,6 @@ var Sketch = /*#__PURE__*/function () {
       this.time += 0.001;
       this.mouse -= (this.mouse - this.speed) * 0.05;
       this.speed *= 0.99;
-      console.log(this.mouse);
       this.scene.rotation.x = this.time;
       this.scene.rotation.y = this.time;
       this.customPass.uniforms.time.value = this.time;
@@ -41458,209 +41457,5 @@ exports.default = Sketch;
 new Sketch({
   dom: document.getElementById("container")
 });
-},{"three":"node_modules/three/build/three.module.js","three/examples/jsm/controls/OrbitControls.js":"node_modules/three/examples/jsm/controls/OrbitControls.js","./shaders/vertex.glsl":"shaders/vertex.glsl","./shaders/fragment.glsl":"shaders/fragment.glsl","./shaders/fragment1.glsl":"shaders/fragment1.glsl","three/examples/jsm/postprocessing/EffectComposer":"node_modules/three/examples/jsm/postprocessing/EffectComposer.js","three/examples/jsm/postprocessing/Renderpass":"node_modules/three/examples/jsm/postprocessing/Renderpass.js","three/examples/jsm/postprocessing/ShaderPass":"node_modules/three/examples/jsm/postprocessing/ShaderPass.js","./postprocessing":"postprocessing.js","dat.gui":"node_modules/dat.gui/build/dat.gui.module.js","./assets/car.jpg":"assets/car.jpg"}],"../../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
-var global = arguments[3];
-var OVERLAY_ID = '__parcel__error__overlay__';
-var OldModule = module.bundle.Module;
-
-function Module(moduleName) {
-  OldModule.call(this, moduleName);
-  this.hot = {
-    data: module.bundle.hotData,
-    _acceptCallbacks: [],
-    _disposeCallbacks: [],
-    accept: function (fn) {
-      this._acceptCallbacks.push(fn || function () {});
-    },
-    dispose: function (fn) {
-      this._disposeCallbacks.push(fn);
-    }
-  };
-  module.bundle.hotData = null;
-}
-
-module.bundle.Module = Module;
-var checkedAssets, assetsToAccept;
-var parent = module.bundle.parent;
-
-if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
-  var hostname = "" || location.hostname;
-  var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55103" + '/');
-
-  ws.onmessage = function (event) {
-    checkedAssets = {};
-    assetsToAccept = [];
-    var data = JSON.parse(event.data);
-
-    if (data.type === 'update') {
-      var handled = false;
-      data.assets.forEach(function (asset) {
-        if (!asset.isNew) {
-          var didAccept = hmrAcceptCheck(global.parcelRequire, asset.id);
-
-          if (didAccept) {
-            handled = true;
-          }
-        }
-      }); // Enable HMR for CSS by default.
-
-      handled = handled || data.assets.every(function (asset) {
-        return asset.type === 'css' && asset.generated.js;
-      });
-
-      if (handled) {
-        console.clear();
-        data.assets.forEach(function (asset) {
-          hmrApply(global.parcelRequire, asset);
-        });
-        assetsToAccept.forEach(function (v) {
-          hmrAcceptRun(v[0], v[1]);
-        });
-      } else if (location.reload) {
-        // `location` global exists in a web worker context but lacks `.reload()` function.
-        location.reload();
-      }
-    }
-
-    if (data.type === 'reload') {
-      ws.close();
-
-      ws.onclose = function () {
-        location.reload();
-      };
-    }
-
-    if (data.type === 'error-resolved') {
-      console.log('[parcel] ✨ Error resolved');
-      removeErrorOverlay();
-    }
-
-    if (data.type === 'error') {
-      console.error('[parcel] 🚨  ' + data.error.message + '\n' + data.error.stack);
-      removeErrorOverlay();
-      var overlay = createErrorOverlay(data);
-      document.body.appendChild(overlay);
-    }
-  };
-}
-
-function removeErrorOverlay() {
-  var overlay = document.getElementById(OVERLAY_ID);
-
-  if (overlay) {
-    overlay.remove();
-  }
-}
-
-function createErrorOverlay(data) {
-  var overlay = document.createElement('div');
-  overlay.id = OVERLAY_ID; // html encode message and stack trace
-
-  var message = document.createElement('div');
-  var stackTrace = document.createElement('pre');
-  message.innerText = data.error.message;
-  stackTrace.innerText = data.error.stack;
-  overlay.innerHTML = '<div style="background: black; font-size: 16px; color: white; position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; padding: 30px; opacity: 0.85; font-family: Menlo, Consolas, monospace; z-index: 9999;">' + '<span style="background: red; padding: 2px 4px; border-radius: 2px;">ERROR</span>' + '<span style="top: 2px; margin-left: 5px; position: relative;">🚨</span>' + '<div style="font-size: 18px; font-weight: bold; margin-top: 20px;">' + message.innerHTML + '</div>' + '<pre>' + stackTrace.innerHTML + '</pre>' + '</div>';
-  return overlay;
-}
-
-function getParents(bundle, id) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return [];
-  }
-
-  var parents = [];
-  var k, d, dep;
-
-  for (k in modules) {
-    for (d in modules[k][1]) {
-      dep = modules[k][1][d];
-
-      if (dep === id || Array.isArray(dep) && dep[dep.length - 1] === id) {
-        parents.push(k);
-      }
-    }
-  }
-
-  if (bundle.parent) {
-    parents = parents.concat(getParents(bundle.parent, id));
-  }
-
-  return parents;
-}
-
-function hmrApply(bundle, asset) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return;
-  }
-
-  if (modules[asset.id] || !bundle.parent) {
-    var fn = new Function('require', 'module', 'exports', asset.generated.js);
-    asset.isNew = !modules[asset.id];
-    modules[asset.id] = [fn, asset.deps];
-  } else if (bundle.parent) {
-    hmrApply(bundle.parent, asset);
-  }
-}
-
-function hmrAcceptCheck(bundle, id) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return;
-  }
-
-  if (!modules[id] && bundle.parent) {
-    return hmrAcceptCheck(bundle.parent, id);
-  }
-
-  if (checkedAssets[id]) {
-    return;
-  }
-
-  checkedAssets[id] = true;
-  var cached = bundle.cache[id];
-  assetsToAccept.push([bundle, id]);
-
-  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
-    return true;
-  }
-
-  return getParents(global.parcelRequire, id).some(function (id) {
-    return hmrAcceptCheck(global.parcelRequire, id);
-  });
-}
-
-function hmrAcceptRun(bundle, id) {
-  var cached = bundle.cache[id];
-  bundle.hotData = {};
-
-  if (cached) {
-    cached.hot.data = bundle.hotData;
-  }
-
-  if (cached && cached.hot && cached.hot._disposeCallbacks.length) {
-    cached.hot._disposeCallbacks.forEach(function (cb) {
-      cb(bundle.hotData);
-    });
-  }
-
-  delete bundle.cache[id];
-  bundle(id);
-  cached = bundle.cache[id];
-
-  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
-    cached.hot._acceptCallbacks.forEach(function (cb) {
-      cb();
-    });
-
-    return true;
-  }
-}
-},{}]},{},["../../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","app.js"], null)
-//# sourceMappingURL=/app.c328ef1a.js.map
+},{"three":"gBK8","three/examples/jsm/controls/OrbitControls.js":"x87H","./shaders/vertex.glsl":"hNHB","./shaders/fragment.glsl":"k6p3","./shaders/fragment1.glsl":"qbw7","three/examples/jsm/postprocessing/EffectComposer":"B2Uy","three/examples/jsm/postprocessing/Renderpass":"fJlF","three/examples/jsm/postprocessing/ShaderPass":"CgT9","./postprocessing":"Qcja","dat.gui":"ArXC","./assets/car.jpg":"Hq6H"}]},{},["A2T1"], null)
+//# sourceMappingURL=app.2fd84691.js.map
