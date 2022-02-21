@@ -4,10 +4,10 @@ import vertex from './shaders/vertex.glsl'
 import fragment from './shaders/fragment.glsl'
 import fragment1 from './shaders/fragment1.glsl'
 
-import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer.js'
-import {RenderPass} from 'three/examples/jsm/postprocessing/Renderpass.js'
-import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass.js'
-import {PostProcessing} from './postprocessing.js'
+import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer'
+import {RenderPass} from 'three/examples/jsm/postprocessing/Renderpass'
+import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass'
+import {PostProcessing} from './postprocessing'
 
 import * as dat from 'dat.gui';
 // import gsap from 'gsap';
@@ -195,7 +195,6 @@ export default class Sketch {
     this.time += 0.001;
     this.mouse -= (this.mouse - this.speed) * 0.05;
     this.speed *= 0.99
-    console.log(this.mouse)
     this.scene.rotation.x = this.time;
     this.scene.rotation.y = this.time;
     this.customPass.uniforms.time.value = this.time;
