@@ -64,7 +64,7 @@ export default class Sketch {
     this.speed = 0;
 
     document.addEventListener('mousemove', (e) =>{
-      this.speed = Math.sqrt((e.pageX - this.lastX)**2 + (e.pageY - this.lastY)**2) * 0.5; 
+      this.speed = Math.sqrt((e.pageX - this.lastX)**2 + (e.pageY - this.lastY)**2) * 0.1; 
       this.lastX = e.pageX;
       this.lastY = e.pageY;
     })
